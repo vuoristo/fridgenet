@@ -8,7 +8,8 @@ import os
 from PIL import Image
 
 NUM_CATEGORIES = 8
-NUM_STEPS = 1000
+NUM_STEPS = 1000 * 80
+MINI_BATCH_SIZE = 10
 
 def build_model(num_categories):
   K.set_image_dim_ordering('th')
@@ -76,9 +77,10 @@ def get_batch(batch_size, img_size, filenames,
 def train(model, num_steps):
   fnames, cats, num_cats = get_filenames_and_categories('images')
   for step in range(num_steps):
-    batch_imgs, batch_cats = get_batch(
-        4, (100,100), fnames, cats, num_cats)
+    print('step', step)
+    batch_imgs, batch_cats = get_batch(MINI_BATCH_SIZE, (100,100), fnames, cats, num_cats)
     model.train_on_batch(batch_imgs, batch_cats)
+
 
 model = build_model(NUM_CATEGORIES)
 train(model, NUM_STEPS)
