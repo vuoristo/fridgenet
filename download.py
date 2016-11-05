@@ -36,7 +36,7 @@ def largest_file(dir_path):
 def fetch_image_urls(query, images_to_download):
     image_urls = set()
 
-    search_url = "https://www.google.com/search?safe=off&site=&tbm=isch&source=hp&biw=1680&bih=950&q={q}&oq={q}&gs_l=img.3..0l10.610.1292.0.1502.6.5.0.0.0.0.107.431.4j1.5.0....0...1ac.1.64.img..1.5.429.YCogLtkPTLU"
+    search_url = "https://www.google.com/search?safe=off&site=&tbm=isch&source=hp&q={q}&oq={q}&gs_l=img"
     # search_url = "https://duckduckgo.com/?q={q}&t=ht&iax=1&ia=images"
     browser = webdriver.Firefox()
     browser.get(search_url.format(q=query))
@@ -108,6 +108,6 @@ if __name__ == '__main__':
 
     pool = Pool(12)
     results = pool.map(persist_image, values)
-    print("Images downloaded: ", len([r for r in results if r]))
+    print("Images downloaded: ", len([r for r in results if r == True]))
 
 
