@@ -2,14 +2,17 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Convolution2D, MaxPooling2D
 from keras.optimizers import SGD
+from keras import backend as K
 import numpy as np
 import os
 from PIL import Image
 
-NUM_CATEGORIES = 2
+NUM_CATEGORIES = 8
 NUM_STEPS = 1000
 
 def build_model(num_categories):
+  K.set_image_dim_ordering('th')
+
   model = Sequential()
   # input: 100x100 images with 3 channels -> (3, 100, 100) tensors.
   # this applies 32 convolution filters of size 3x3 each.
@@ -71,7 +74,7 @@ def get_batch(batch_size, img_size, filenames,
   return batch_images, batch_categories_one_hot
 
 def train(model, num_steps):
-  fnames, cats, num_cats = get_filenames_and_categories('img')
+  fnames, cats, num_cats = get_filenames_and_categories('images')
   for step in range(num_steps):
     batch_imgs, batch_cats = get_batch(
         4, (100,100), fnames, cats, num_cats)
@@ -81,3 +84,4 @@ model = build_model(NUM_CATEGORIES)
 train(model, NUM_STEPS)
 
 model.save('trained_model')
+
