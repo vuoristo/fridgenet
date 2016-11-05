@@ -1,3 +1,6 @@
+requests
+ipdb
+selenium
+pillow
 numpy
-Pillow
 h5py
