@@ -80,6 +80,8 @@ def train(model, num_steps):
     print('step', step)
     batch_imgs, batch_cats = get_batch(MINI_BATCH_SIZE, (100,100), fnames, cats, num_cats)
     model.train_on_batch(batch_imgs, batch_cats)
+    if step % 10000 == 0:
+      model.save('trained_model')
 
 
 model = build_model(NUM_CATEGORIES)
