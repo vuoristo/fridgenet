@@ -1,10 +1,12 @@
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Convolution2D, MaxPooling2D
 from keras.optimizers import SGD
 from keras import backend as K
 import numpy as np
 import os
+import argparse
+
 from PIL import Image
 
 NUM_CATEGORIES = 8
@@ -129,9 +131,27 @@ def train(model, num_steps):
     if step % 10000 == 0:
       model.save('trained_model')
 
+def main():
+  parser = argparse.ArgumentParser('Train or Evaluate a DQN Agent for OpenAI '
+      'Gym Atari Environments')
+  parser.add_argument('--load_model', '-l', default=None)
+  parser.add_argument('--classify', '-c', default=None)
+  args = parser.parse_args()
 
-model = build_model(NUM_CATEGORIES)
-train(model, NUM_STEPS)
+  if args.load_model is not None:
+    model = load_model(args.load_model)
+  else:
+    model = build_model(NUM_CATEGORIES)
 
-model.save('trained_model')
+  if args.classify is None:
+    train(model, NUM_STEPS)
+    model.save('trained_model')
+  else:
+    img = np.array(Image.open(args.classify).convert('RGB').resize((100,100)))
+    img = np.moveaxis(img, -1, 0)
+    img = img.reshape((1,3,100,100))
+    features = model.predict(img)
+    print(features)
 
+if __name__ == '__main__':
+  main()
