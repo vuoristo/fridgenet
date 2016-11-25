@@ -10,7 +10,7 @@ import argparse
 
 from PIL import Image
 
-NUM_CATEGORIES = 8
+NUM_CATEGORIES = 6
 NUM_STEPS = 1000 * 80
 NUM_EPOCH = 2000
 MINI_BATCH_SIZE = 10
