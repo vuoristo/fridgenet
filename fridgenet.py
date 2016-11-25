@@ -11,6 +11,62 @@ NUM_CATEGORIES = 8
 NUM_STEPS = 1000 * 80
 MINI_BATCH_SIZE = 10
 
+class ImageLoader(object):
+  def __init__(self, mini_batch_size, filenames, categories, num_categories):
+    self.mini_batch_size = mini_batch_size
+    self.cache = {}
+    self.filenames = filenames
+    self.categories = categories
+    self.num_categories = num_categories
+    self.image_size = (100, 100)
+
+  def get_image(self, filepath):
+    image = self.cache.get(filepath, None)
+    if image:
+      return image
+    else:
+      image = Image.open(filepath).convert('RGB').resize(self.image_size)
+      self.cache[filepath] = image
+      return image
+
+  def get_images(self, count):
+    indexes = np.random.choice(len(self.filenames), self.mini_batch_size)
+    batch_names = self.filenames[indexes]
+    batch_categories = self.categories[indexes]
+    batch_images = [np.array(self.get_image(name)) for name in batch_names]
+    batch_images = np.array(batch_images)
+    batch_images = np.moveaxis(batch_images, -1, 1)
+    batch_categories_one_hot = np.zeros((count, self.num_categories))
+    batch_categories_one_hot[np.arange(count), batch_categories] = 1
+
+    return batch_images, batch_categories_one_hot
+
+  def get_all(self):
+    return self.get_images(len(self.filenames))
+
+  def get_batch(self):
+    return self.get_images(self.mini_batch_size)
+
+  def shuffle(self):
+    image_count = len(self.filenames)
+    mask = np.random.choice(np.arange(image_count), image_count, replace=False)
+    new_filenames = self.filenames[mask]
+    new_categories = self.categories[mask]
+    return ImageLoader(self.mini_batch_size, new_filenames, new_categories, self.num_categories)
+
+  def split(self, ratio):
+    total = len(self.filenames)
+    validation_examples = int(total * (1 - ratio))
+    training_examples = total - validation_examples
+    training_images = self.filenames[0:training_examples]
+    training_labels = self.categories[0:training_examples]
+    validation_images = self.filenames[-validation_examples:]
+    validation_labels = self.categories[-validation_examples:]
+
+    training_data = ImageLoader(self.mini_batch_size, training_images, training_labels, self.num_categories)
+    validation_data = ImageLoader(self.mini_batch_size, validation_images, validation_labels, self.num_categories)
+    return training_data, validation_data
+
 def build_model(num_categories):
   K.set_image_dim_ordering('th')
 
@@ -60,25 +116,15 @@ def get_filenames_and_categories(path):
 
   return np.array(filenames), np.array(categories), len(category_names)
 
-def get_batch(batch_size, img_size, filenames,
-              categories, num_categories):
-  indexes = np.random.choice(len(filenames), batch_size)
-  batch_names = filenames[indexes]
-  batch_categories = categories[indexes]
-  batch_images = [np.array(
-    Image.open(name).convert('RGB').resize(img_size)) for name in batch_names]
-  batch_images = np.array(batch_images)
-  batch_images = np.moveaxis(batch_images, -1, 1)
-  batch_categories_one_hot = np.zeros((batch_size, num_categories))
-  batch_categories_one_hot[np.arange(batch_size), batch_categories] = 1
-
-  return batch_images, batch_categories_one_hot
-
 def train(model, num_steps):
-  fnames, cats, num_cats = get_filenames_and_categories('images')
+  fnames, categories, category_count = get_filenames_and_categories('images')
+  image_loader = ImageLoader(MINI_BATCH_SIZE, fnames, categories, category_count).shuffle()
+
+  training_set, validation_set = image_loader.split(0.9)
+
   for step in range(num_steps):
     print('step', step)
-    batch_imgs, batch_cats = get_batch(MINI_BATCH_SIZE, (100,100), fnames, cats, num_cats)
+    batch_imgs, batch_cats = image_loader.get_batch()
     model.train_on_batch(batch_imgs, batch_cats)
     if step % 10000 == 0:
       model.save('trained_model')
