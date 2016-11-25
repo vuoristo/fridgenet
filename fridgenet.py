@@ -10,7 +10,7 @@ import argparse
 
 from PIL import Image
 
-NUM_CATEGORIES = 6
+NUM_CATEGORIES = 7
 NUM_STEPS = 1000 * 80
 NUM_EPOCH = 2000
 MINI_BATCH_SIZE = 10
@@ -97,7 +97,7 @@ def build_model(num_categories):
   model.add(Activation('softmax'))
 
   sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
-  model.compile(loss='categorical_crossentropy', optimizer=sgd)
+  model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
   return model
 
 def get_filenames_and_categories(path):
@@ -130,6 +130,10 @@ def get_filenames_and_categories(path):
 
   return np.array(simple_filenames), np.array(simple_categories), len(category_names)
 
+def accuracy(model, dataset):
+  images, labels = dataset.get_all()
+  return model.test_on_batch(images, labels)
+
 def train(model, model_name, num_epoch):
   fnames, categories, category_count = get_filenames_and_categories('images')
   image_loader = ImageLoader(MINI_BATCH_SIZE, fnames, categories, category_count).shuffle()
@@ -148,6 +152,7 @@ def train(model, model_name, num_epoch):
   for e in range(num_epoch):
     print('Epoch', e)
     batches = 0
+    print("validation accuracy:", accuracy(model, validation_set))
     for X_batch, Y_batch in datagen.flow(all_imgs, all_cats, batch_size=10):
       loss = model.train_on_batch(X_batch, Y_batch)
       batches += 1
@@ -157,6 +162,7 @@ def train(model, model_name, num_epoch):
         break
     if e % 10 == 0:
       model.save(model_name)
+
 
 def main():
   parser = argparse.ArgumentParser('jiiritys piiritys')
