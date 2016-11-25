@@ -8,6 +8,7 @@ app = Flask(__name__)
 
 @app.route('/detect', methods=['POST'])
 def parse_image():
+    print(image_data)
     image_data = request.data
     Image.open(io.BytesIO(image_data))
     return jsonify(returnValue="tomato")
