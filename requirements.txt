@@ -5,4 +5,5 @@ pillow
 numpy
 keras
 h5py
+flask
 
