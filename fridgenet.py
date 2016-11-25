@@ -2,6 +2,7 @@ from keras.models import Sequential, load_model
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Convolution2D, MaxPooling2D
 from keras.optimizers import SGD
+from keras.preprocessing.image import ImageDataGenerator
 from keras import backend as K
 import numpy as np
 import os
@@ -11,6 +12,7 @@ from PIL import Image
 
 NUM_CATEGORIES = 8
 NUM_STEPS = 1000 * 80
+NUM_EPOCH = 2000
 MINI_BATCH_SIZE = 10
 
 class ImageLoader(object):
@@ -32,7 +34,7 @@ class ImageLoader(object):
       return image
 
   def get_images(self, count):
-    indexes = np.random.choice(len(self.filenames), self.mini_batch_size)
+    indexes = np.random.choice(len(self.filenames), count)
     batch_names = self.filenames[indexes]
     batch_categories = self.categories[indexes]
     batch_images = [np.array(self.get_image(name)) for name in batch_names]
@@ -114,18 +116,31 @@ def get_filenames_and_categories(path):
 
   return np.array(filenames), np.array(categories), len(category_names)
 
-def train(model, num_steps):
+def train(model, num_epoch):
   fnames, categories, category_count = get_filenames_and_categories('images')
   image_loader = ImageLoader(MINI_BATCH_SIZE, fnames, categories, category_count).shuffle()
 
+  datagen = ImageDataGenerator(
+      rotation_range=300,
+      width_shift_range=0.2,
+      height_shift_range=0.2,
+      horizontal_flip=True,
+      zoom_range=0.5,
+      )
   training_set, validation_set = image_loader.split(0.9)
 
-  for step in range(num_steps):
-    print('step', step)
-    batch_imgs, batch_cats = image_loader.get_batch()
-    model.train_on_batch(batch_imgs, batch_cats)
-    if step % 10000 == 0:
-      model.save('trained_model')
+  all_imgs, all_cats = image_loader.get_all()
+
+  for e in range(num_epoch):
+    print('Epoch', e)
+    batches = 0
+    for X_batch, Y_batch in datagen.flow(all_imgs, all_cats, batch_size=10):
+      loss = model.train_on_batch(X_batch, Y_batch)
+      batches += 1
+      if batches >= len(all_imgs) / 10:
+        break
+      if e % 10 == 0:
+        model.save('trained_model')
 
 def main():
   parser = argparse.ArgumentParser('jiiritys piiritys')
@@ -139,7 +154,7 @@ def main():
     model = build_model(NUM_CATEGORIES)
 
   if args.classify is None:
-    train(model, NUM_STEPS)
+    train(model, NUM_EPOCH)
     model.save('trained_model')
   else:
     img = np.array(Image.open(args.classify).convert('RGB').resize((100,100)))
