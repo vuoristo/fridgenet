@@ -77,14 +77,10 @@ def build_model(num_categories):
   # this applies 32 convolution filters of size 3x3 each.
   model.add(Convolution2D(32, 3, 3, border_mode='valid', input_shape=(3, 100, 100)))
   model.add(Activation('relu'))
-  model.add(Convolution2D(32, 3, 3))
-  model.add(Activation('relu'))
   model.add(MaxPooling2D(pool_size=(2, 2)))
   model.add(Dropout(0.25))
 
   model.add(Convolution2D(64, 3, 3, border_mode='valid'))
-  model.add(Activation('relu'))
-  model.add(Convolution2D(64, 3, 3))
   model.add(Activation('relu'))
   model.add(MaxPooling2D(pool_size=(2, 2)))
   model.add(Dropout(0.25))
