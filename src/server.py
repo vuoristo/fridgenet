@@ -10,4 +10,3 @@ def parse_image():
     image_data = request.data
     Image.open(io.BytesIO(image_data))
     return Response(status=200, response='tomato')
-
