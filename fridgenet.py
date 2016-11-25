@@ -132,8 +132,7 @@ def train(model, num_steps):
       model.save('trained_model')
 
 def main():
-  parser = argparse.ArgumentParser('Train or Evaluate a DQN Agent for OpenAI '
-      'Gym Atari Environments')
+  parser = argparse.ArgumentParser('jiiritys piiritys')
   parser.add_argument('--load_model', '-l', default=None)
   parser.add_argument('--classify', '-c', default=None)
   args = parser.parse_args()
