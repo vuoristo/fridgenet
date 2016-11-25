@@ -130,7 +130,7 @@ def get_filenames_and_categories(path):
 
   return np.array(simple_filenames), np.array(simple_categories), len(category_names)
 
-def train(model, num_epoch):
+def train(model, model_name, num_epoch):
   fnames, categories, category_count = get_filenames_and_categories('images')
   image_loader = ImageLoader(MINI_BATCH_SIZE, fnames, categories, category_count).shuffle()
 
@@ -151,16 +151,24 @@ def train(model, num_epoch):
     for X_batch, Y_batch in datagen.flow(all_imgs, all_cats, batch_size=10):
       loss = model.train_on_batch(X_batch, Y_batch)
       batches += 1
+      if batches % 100 == 0:
+        print('Batch', batches)
       if batches >= len(all_imgs) / 10:
         break
-      if e % 10 == 0:
-        model.save('trained_model')
+    if e % 10 == 0:
+      model.save(model_name)
 
 def main():
   parser = argparse.ArgumentParser('jiiritys piiritys')
   parser.add_argument('--load_model', '-l', default=None)
   parser.add_argument('--classify', '-c', default=None)
+  parser.add_argument('--model_name', '-n', default=None)
   args = parser.parse_args()
+
+  if args.model_name is None:
+    model_name = 'trained_model'
+  else:
+    model_name = args.model_name
 
   if args.load_model is not None:
     model = load_model(args.load_model)
@@ -168,8 +176,8 @@ def main():
     model = build_model(NUM_CATEGORIES)
 
   if args.classify is None:
-    train(model, NUM_EPOCH)
-    model.save('trained_model')
+    train(model, model_name, NUM_EPOCH)
+    model.save(model_name)
   else:
     img = np.array(Image.open(args.classify).convert('RGB').resize((100,100)))
     img = np.moveaxis(img, -1, 0)
