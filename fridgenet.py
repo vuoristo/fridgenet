@@ -110,11 +110,25 @@ def get_filenames_and_categories(path):
       cat_name = root_list[1]
       category_names.append(cat_name)
       cat = category_names.index(cat_name)
+      grouped_filenames = []
+      grouped_cats = []
       for f in files:
-        filenames.append(root + '/' + f)
-        categories.append(cat)
+        grouped_filenames.append(root + '/' + f)
+        grouped_cats.append(cat)
 
-  return np.array(filenames), np.array(categories), len(category_names)
+      filenames.append(grouped_filenames)
+      categories.append(grouped_cats)
+
+  # normalize category sizes
+  cat_lens = [len(i) for i in categories]
+  min_len = min(cat_lens)
+  simple_filenames = []
+  simple_categories = []
+  for i,j in zip(filenames, categories):
+    simple_categories += j[:min_len]
+    simple_filenames += i[:min_len]
+
+  return np.array(simple_filenames), np.array(simple_categories), len(category_names)
 
 def train(model, num_epoch):
   fnames, categories, category_count = get_filenames_and_categories('images')
