@@ -2,8 +2,8 @@ import requests
 import json
 import os
 
-X_MASHAPE_KEY = ""
-API_KEY = ""
+X_MASHAPE_KEY = "KqHWb2rYKImshtwo9BeupImaWkwfp1BQTq7jsnAU2R80mVzO6N"
+API_KEY = 'c1827c33a6a2a89006d3a4a84d30ea98'
 
 def get_recipes_for_items(list_of_items):
   headers={

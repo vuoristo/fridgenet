@@ -13,12 +13,15 @@ import Alamofire
 let ROOT_URL = "https://fridgenet.herokuapp.com"
 
 class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
+    var addButton: UIButton?
+    var removeButton: UIButton?
     
     var frameCounter: Int = 0
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		setupCameraSession()
+
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
@@ -42,7 +45,56 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
 		preview?.videoGravity = AVLayerVideoGravityResize
 		return preview!
 	}()
-
+    
+    func addButtons() {
+        addButton?.frame = CGRect(x: 100, y: 100, width: 100, height: 50)
+        addButton?.backgroundColor = UIColor.green
+        addButton?.setTitle("Remove", for: UIControlState.normal)
+        addButton?.addTarget(self, action: #selector(self.addToInventory), for: UIControlEvents.touchUpInside)
+        self.view.addSubview(addButton!)
+        
+        removeButton?.frame = CGRect(x: 200, y: 100, width: 100, height: 50)
+        removeButton?.backgroundColor = UIColor.green
+        removeButton?.setTitle("Add", for: UIControlState.normal)
+        removeButton?.addTarget(self, action: #selector(self.removeFromInventory), for: UIControlEvents.touchUpInside)
+        self.view.addSubview(removeButton!)
+    }
+    
+    func addToInventory(label: String) {
+        let parameters: Parameters = [
+            "label":label
+        ]
+        Alamofire.request(ROOT_URL + "/inventory", method: .post, parameters: parameters, encoding: JSONEncoding.default).responseJSON { (response) in
+                      switch response.result {
+            case .success:
+                print("Successfully added!")
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    func removeFromInventory(label: String) {
+        let parameters: Parameters = [
+            "label":label
+        ]
+        Alamofire.request(ROOT_URL + "/inventory", method: .delete, parameters: parameters, encoding: JSONEncoding.default).responseJSON { (response) in
+            switch response.result {
+            case .success:
+                print("Successfully Removed!")
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    func itemFound(label: String) {
+        let alert = UIAlertController(title: "Would you like to add or remove the " + label + "?", message: label, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Add", style: UIAlertActionStyle.default, handler: {(action: UIAlertAction!) in self.addToInventory(label: label)}))
+        alert.addAction(UIAlertAction(title: "Remove", style: UIAlertActionStyle.destructive, handler: {(action: UIAlertAction!) in self.removeFromInventory(label: label)}))
+    }
+    
+    
     func setupCameraSession() {
         let captureDevice = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo) as AVCaptureDevice
 
@@ -124,6 +176,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     }
 
 	func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
+        addButton?.bringSubview(toFront: self.view)
         frameCounter += 1
         if frameCounter % 3 == 0 {
             print("Collected \n")
@@ -132,9 +185,39 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 print("Could not get JPEG representation of UIImage")
                 return
             }
-            Alamofire.upload(imageData, to: ROOT_URL + "/detect").responseJSON { response in
-                debugPrint(response)
-            }
+            let URL = try! URLRequest(url: ROOT_URL + "/detect", method: .post)
+            Alamofire.upload(multipartFormData: { (multipartFormData) in
+                multipartFormData.append(imageData, withName: "file", fileName: "uploaded_file", mimeType: "image/jpeg")
+            }, with: URL, encodingCompletion: { (result) in
+                switch result {
+                case .success(let upload, _, _):
+                    
+                    upload.responseJSON { response in
+                        if let httpResponse = response.response {
+                            if httpResponse.statusCode == 200 {
+                                print("KAKSSATAA")
+                                print(response.response)
+                                print(response.result)
+                                self.itemFound(label: response.result.value as! String)
+                            }
+                            else if httpResponse.statusCode == 204 {
+                              print("Nothing found")
+                            }
+                        }
+                        print(response.request ?? "qweqwe")  // original URL request
+                        print(response.response ?? "qweqwe") // URL response
+                        print(response.data ?? "qweqwe")     // server data
+                        print(response.result)   // result of response serialization
+                        //                        self.showSuccesAlert()
+                        if let JSON = response.result.value {
+                            print("JSON: \(JSON)")
+                        }
+                    }
+                    
+                case .failure(let encodingError):
+                    print(encodingError)
+                }            })
+            
             
         }
 		// Here you collect each frame and process it
