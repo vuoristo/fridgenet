@@ -1,9 +1,2 @@
-requests
-ipdb
-selenium
-pillow
-numpy
-keras
-h5py
 flask
 
