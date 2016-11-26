@@ -1,15 +1,16 @@
 import requests
 import json
+import os
 
 X_MASHAPE_KEY = ""
 API_KEY = ""
 
 def get_recipes_for_items(list_of_items):
   headers={
-    "X-Mashape-Key": X_MASHAPE_KEY,
+    "X-Mashape-Key": os.environ.get('MASHAPE_KEY'),
     "Accept": "application/json"
   }
-  payload = {'q':','.join(list_of_items), 'key': API_KEY}
+  payload = {'q':','.join(list_of_items), 'key': os.environ.get('API_KEY')}
   r = requests.get("https://community-food2fork.p.mashape.com/search", params=payload, headers=headers)
 
   r_dict = json.loads(r.text)
@@ -22,18 +23,12 @@ def get_recipes_for_items(list_of_items):
 
 def get_recipe(rid):
   headers={
-    "X-Mashape-Key": X_MASHAPE_KEY,
+    "X-Mashape-Key": os.environ.get('MASHAPE_KEY'),
     "Accept": "application/json"
   }
-  payload = {'rId':rid, 'key': API_KEY}
+  payload = {'rId':rid, 'key': os.environ.get('API_KEY')}
   r = requests.get("https://community-food2fork.p.mashape.com/get", params=payload, headers=headers)
   r_dict = json.loads(r.text)
 
   return r_dict
 
-rids = get_recipes_for_items(['mozzarella'])
-
-import pprint as pp
-for rid in rids:
-  rec = get_recipe(rid)
-  pp.pprint(rec)

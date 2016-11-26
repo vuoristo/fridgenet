@@ -1,26 +1,33 @@
 import urwid
 import requests
+import recipe_recommender
 
-def menu(title, choices):
-    body = [urwid.Text(title), urwid.Divider()]
-    for choice in choices:
-        text = "{count}x {name}".format(count=choice['count'], name=choice['name'])
-        button = urwid.Button(text)
-        urwid.connect_signal(button, 'click', item_chosen, choice['name'])
-        body.append(urwid.AttrMap(button, None, focus_map='reversed'))
+recipes = {}
+
+def item_list(title, items):
+    text = urwid.Text(title)
+    header = urwid.AttrWrap(text, 'streak')
+    body = [header, urwid.Divider()]
+    for item in items:
+        text = "{count}x {name}".format(count=item['count'], name=item['name'])
+        text = urwid.Text(text)
+        body.append(urwid.AttrMap(text, None, focus_map='reversed'))
     return urwid.ListBox(urwid.SimpleFocusListWalker(body))
-
-def item_chosen(button, choice):
-    response = urwid.Text([u'You chose ', choice, u'\n'])
-    done = urwid.Button(u'Ok')
-    urwid.connect_signal(done, 'click', exit_program)
-    main.original_widget = urwid.Filler(urwid.Pile([response,
-        urwid.AttrMap(done, None, focus_map='reversed')]))
 
 def exit_program(button):
     raise urwid.ExitMainLoop()
 
+def fetch_recipes():
+    recipe_ids = recipe_recommender.get_recipes_for_items(['tomato'])
+    fetched_recipes = [recipe_recommender.get_recipe(id) for id in recipe_ids[0:10]]
+    for recipe in fetched_recipes:
+        try:
+            recipes[recipe['recipe']['title']] = recipe
+        except KeyError:
+            pass
+
 items = requests.get('https://fridgenet.herokuapp.com/inventory').json()
+fetch_recipes()
 
 def parse_items(items):
     data = {}
@@ -32,21 +39,41 @@ def parse_items(items):
         result.append({'name': item_name, 'count': count})
     return result
 
-main = urwid.Padding(menu(u'Fridgenet', parse_items(items)), left=2, right=2)
+def on_recipe_selected():
+    pass
+
+def right_panel(items):
+    header = urwid.AttrWrap(urwid.Text(u"Recipes"), 'streak')
+    body = [header, urwid.Divider()]
+
+    for title, recipe in recipes.items():
+        button = urwid.Button(title)
+        urwid.connect_signal(button, 'click', on_recipe_selected)
+        body.append(button)
+    return urwid.ListBox(urwid.SimpleFocusListWalker(body))
+
+items = parse_items(items)
+header = urwid.AttrWrap(urwid.Text(u"Fridgenet"), 'banner')
+
+left_panel =  item_list(u'Fridge Contents', items)
+right_panel = right_panel(items)
+
+main = urwid.Columns([left_panel, right_panel])
+view = urwid.Frame(urwid.AttrWrap(main, 'body'), header=header)
 
 palette = [
-    ('banner', '', '', '', '#ffa', '#60d'),
-    ('streak', '', '', '', 'g50', '#60a'),
+    ('banner', '', '', '', 'g50', '#60a'),
+    ('streak', '', '', '', '#ffa', '#60d'),
     ('inside', '', '', '', 'g38', '#808'),
     ('outside', '', '', '', 'g27', '#a06'),
     ('bg', '', '', '', 'g7', '#d06')]
 
-top = urwid.Overlay(main, urwid.SolidFill(u'\N{MEDIUM SHADE}'),
+top = urwid.Overlay(view, urwid.SolidFill(u'\N{MEDIUM SHADE}'),
     align='center', width=('relative', 60),
     valign='middle', height=('relative', 60),
     min_width=20, min_height=9)
 
-loop = urwid.MainLoop(top, palette=[('reversed', 'standout', '')])
+loop = urwid.MainLoop(top, palette=palette)
 loop.screen.set_terminal_properties(colors=256)
 loop.run()
 
