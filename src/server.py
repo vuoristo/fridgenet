@@ -14,6 +14,12 @@ def hello_world():
 
 @application.route('/detect', methods=['POST'])
 def parse_image():
+    f = request.files['image']
+    f.save('tagger/uploaded_file.jpeg')
+    return Response(status=200, response='Detected')
+
+@application.route('/inventory', methods=['POST'])
+def add_to_inventory():
     # f = request.files['image']
     # f.save('tagger/uploaded_file.jpeg')
     # Mock json files containing responses from Vision API
@@ -26,4 +32,4 @@ def parse_image():
     with open('tagger/mock_jsons/cucumber.json') as json_data:
         data = json.load(json_data)
         jsonParser(data)
-    return Response(status=200, response='parsed')
+    return Response(status=200, response='Added')
