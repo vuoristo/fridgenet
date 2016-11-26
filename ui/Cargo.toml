@@ -1,0 +1,12 @@
+[package]
+name = "ui"
+version = "0.1.0"
+authors = ["Kenneth Blomqvist <kekeblom@gmail.com>"]
+
+[dependencies]
+ncurses = "5.84.0"
+rustc-serialize = "0.3.21"
+
+[features]
+custom_features = ["menu"]
+
