@@ -3,7 +3,8 @@ from flask import Flask, Response
 from flask import request
 from flask import jsonify
 import json
-from tagger.photoTagger import jsonParser
+from src.tagger.photo_tagger import recognize
+import time
 
 application = Flask(__name__)
 
@@ -11,12 +12,13 @@ application = Flask(__name__)
 def hello_world():
     return Response(status=200, response='Hello, world!')
 
-
 @application.route('/detect', methods=['POST'])
 def parse_image():
-    f = request.files['image']
-    f.save('tagger/uploaded_file.jpeg')
-    return Response(status=200, response='Detected')
+    f = request.files['file']
+    filename = 'tagger/images/uploaded_file' + str(time.time()) + '.jpeg'
+    f.save(filename)
+    recognize(filename)
+    return Response(status=200, response='Recognized')
 
 @application.route('/inventory', methods=['GET'])
 def get_inventory():
@@ -25,18 +27,3 @@ def get_inventory():
         items = [item.strip() for item in inventory.split("\n") if item]
         return Response(status=200, response=json.dumps(items), content_type='application/javascript')
 
-@application.route('/inventory', methods=['POST'])
-def add_to_inventory():
-    # f = request.files['image']
-    # f.save('tagger/uploaded_file.jpeg')
-    # Mock json files containing responses from Vision API
-    with open('src/tagger/mock_jsons/tomato.json') as json_data:
-        data = json.load(json_data)
-        jsonParser(data)
-    with open('src/tagger/mock_jsons/strawberry.json') as json_data:
-        data = json.load(json_data)
-        jsonParser(data)
-    with open('src/tagger/mock_jsons/cucumber.json') as json_data:
-        data = json.load(json_data)
-        jsonParser(data)
-    return Response(status=200, response='Added')
