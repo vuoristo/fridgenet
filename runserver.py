@@ -2,9 +2,5 @@ from os import environ
 from src.server import app
 
 if __name__ == '__main__':
-    from wsgiref.simple_server import make_server
-
-    httpd = make_server('localhost', 5555, app)
-    httpd.serve_forever()
-    HOST = environ.get('SERVER_HOST', '0.0.0.0')
+    app.run(debug=True, host='0.0.0.0')
 
