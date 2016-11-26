@@ -1,0 +1,191 @@
+{
+  "labelAnnotations": [
+    {
+      "mid": "/m/02wbm",
+      "description": "Food",
+      "score": 95
+    },
+    {
+      "mid": "/m/036qh8",
+      "description": "Produce",
+      "score": 92
+    },
+    {
+      "mid": "/m/05s2s",
+      "description": "Plant",
+      "score": 91
+    },
+    {
+      "mid": "/m/0f4s2w",
+      "description": "Vegetable",
+      "score": 91
+    },
+    {
+      "mid": "/m/015x4r",
+      "description": "Cucumber",
+      "score": 83
+    },
+    {
+      "mid": "/m/01v728",
+      "description": "Land Plant",
+      "score": 77
+    },
+    {
+      "mid": "/m/04sjm",
+      "description": "Flowering Plant",
+      "score": 76
+    },
+    {
+      "mid": "/m/01wdp",
+      "description": "Cucumber Gourd And Melon Family",
+      "score": 74
+    },
+    {
+      "mid": "/m/011jbn",
+      "description": "Gourd",
+      "score": 52
+    }
+  ],
+  "safeSearchAnnotation": {
+    "adult": "VERY_UNLIKELY",
+    "spoof": "VERY_UNLIKELY",
+    "medical": "UNLIKELY",
+    "violence": "VERY_UNLIKELY"
+  },
+  "imagePropertiesAnnotation": {
+    "dominantColors": {
+      "colors": [
+        {
+          "color": {
+            "red": 46,
+            "green": 92,
+            "blue": 12
+          },
+          "score": 0.39163536,
+          "pixelFraction": 0.080825962,
+          "percent": 40.870706382402844,
+          "percentRounded": 41,
+          "rgb": "46, 92, 12",
+          "hex": "2E5C0C"
+        },
+        {
+          "color": {
+            "red": 99,
+            "green": 124,
+            "blue": 82
+          },
+          "score": 0.023711212,
+          "pixelFraction": 0.024129793,
+          "percent": 2.474480301326486,
+          "percentRounded": 2,
+          "rgb": "99, 124, 82",
+          "hex": "637C52"
+        },
+        {
+          "color": {
+            "red": 82,
+            "green": 130,
+            "blue": 46
+          },
+          "score": 0.19975998,
+          "pixelFraction": 0.064129792,
+          "percent": 20.84676799749304,
+          "percentRounded": 21,
+          "rgb": "82, 130, 46",
+          "hex": "52822E"
+        },
+        {
+          "color": {
+            "red": 243,
+            "green": 250,
+            "blue": 236
+          },
+          "score": 0.0018921111,
+          "pixelFraction": 0.6475516,
+          "percent": 0.1974589761531882,
+          "percentRounded": 0,
+          "rgb": "243, 250, 236",
+          "hex": "F3FAEC"
+        },
+        {
+          "color": {
+            "red": 81,
+            "green": 133,
+            "blue": 31
+          },
+          "score": 0.13074888,
+          "pixelFraction": 0.058466077,
+          "percent": 13.644833000544242,
+          "percentRounded": 14,
+          "rgb": "81, 133, 31",
+          "hex": "51851F"
+        },
+        {
+          "color": {
+            "red": 28,
+            "green": 72,
+            "blue": 2
+          },
+          "score": 0.081587031,
+          "pixelFraction": 0.013097345,
+          "percent": 8.51434760286456,
+          "percentRounded": 9,
+          "rgb": "28, 72, 2",
+          "hex": "1C4802"
+        },
+        {
+          "color": {
+            "red": 117,
+            "green": 164,
+            "blue": 83
+          },
+          "score": 0.066758692,
+          "pixelFraction": 0.019292036,
+          "percent": 6.966875767308819,
+          "percentRounded": 7,
+          "rgb": "117, 164, 83",
+          "hex": "75A453"
+        },
+        {
+          "color": {
+            "red": 58,
+            "green": 93,
+            "blue": 35
+          },
+          "score": 0.02616331,
+          "pixelFraction": 0.0097345132,
+          "percent": 2.730378995915446,
+          "percentRounded": 3,
+          "rgb": "58, 93, 35",
+          "hex": "3A5D23"
+        },
+        {
+          "color": {
+            "red": 58,
+            "green": 108,
+            "blue": 8
+          },
+          "score": 0.019010484,
+          "pixelFraction": 0.010560472,
+          "percent": 1.9839166457067803,
+          "percentRounded": 2,
+          "rgb": "58, 108, 8",
+          "hex": "3A6C08"
+        },
+        {
+          "color": {
+            "red": 105,
+            "green": 158,
+            "blue": 57
+          },
+          "score": 0.016962916,
+          "pixelFraction": 0.0077876104,
+          "percent": 1.770234330284588,
+          "percentRounded": 2,
+          "rgb": "105, 158, 57",
+          "hex": "699E39"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,225 @@
+{
+  "labelAnnotations": [
+    {
+      "mid": "/m/07fbm7",
+      "description": "Strawberry",
+      "score": 98
+    },
+    {
+      "mid": "/m/0fbdb",
+      "description": "Strawberries",
+      "score": 97
+    },
+    {
+      "mid": "/m/02xwb",
+      "description": "Fruit",
+      "score": 96
+    },
+    {
+      "mid": "/m/02wbm",
+      "description": "Food",
+      "score": 95
+    },
+    {
+      "mid": "/m/036qh8",
+      "description": "Produce",
+      "score": 93
+    },
+    {
+      "mid": "/m/05s2s",
+      "description": "Plant",
+      "score": 91
+    }
+  ],
+  "textAnnotations": [
+    {
+      "locale": "zh-Hant",
+      "description": "腳\n",
+      "boundingPoly": {
+        "vertices": [
+          {
+            "x": 101,
+            "y": 81
+          },
+          {
+            "x": 150,
+            "y": 81
+          },
+          {
+            "x": 150,
+            "y": 134
+          },
+          {
+            "x": 101,
+            "y": 134
+          }
+        ]
+      }
+    },
+    {
+      "description": "腳",
+      "boundingPoly": {
+        "vertices": [
+          {
+            "x": 105,
+            "y": 135
+          },
+          {
+            "x": 101,
+            "y": 86
+          },
+          {
+            "x": 146,
+            "y": 82
+          },
+          {
+            "x": 150,
+            "y": 131
+          }
+        ]
+      }
+    }
+  ],
+  "safeSearchAnnotation": {
+    "adult": "VERY_UNLIKELY",
+    "spoof": "VERY_UNLIKELY",
+    "medical": "UNLIKELY",
+    "violence": "VERY_UNLIKELY"
+  },
+  "imagePropertiesAnnotation": {
+    "dominantColors": {
+      "colors": [
+        {
+          "color": {
+            "red": 217,
+            "green": 19,
+            "blue": 27
+          },
+          "score": 0.18510164,
+          "pixelFraction": 0.039437179,
+          "percent": 22.519227081205408,
+          "percentRounded": 23,
+          "rgb": "217, 19, 27",
+          "hex": "D9131B"
+        },
+        {
+          "color": {
+            "red": 169,
+            "green": 24,
+            "blue": 32
+          },
+          "score": 0.15064068,
+          "pixelFraction": 0.035671819,
+          "percent": 18.32675107895963,
+          "percentRounded": 18,
+          "rgb": "169, 24, 32",
+          "hex": "A91820"
+        },
+        {
+          "color": {
+            "red": 195,
+            "green": 194,
+            "blue": 53
+          },
+          "score": 0.0070714173,
+          "pixelFraction": 0.0028735632,
+          "percent": 0.8602995195756472,
+          "percentRounded": 1,
+          "rgb": "195, 194, 53",
+          "hex": "C3C235"
+        },
+        {
+          "color": {
+            "red": 191,
+            "green": 8,
+            "blue": 15
+          },
+          "score": 0.17662852,
+          "pixelFraction": 0.030618312,
+          "percent": 21.48839821677015,
+          "percentRounded": 21,
+          "rgb": "191, 8, 15",
+          "hex": "BF080F"
+        },
+        {
+          "color": {
+            "red": 245,
+            "green": 242,
+            "blue": 238
+          },
+          "score": 0.0016404362,
+          "pixelFraction": 0.69976217,
+          "percent": 0.1995733549418022,
+          "percentRounded": 0,
+          "rgb": "245, 242, 238",
+          "hex": "F5F2EE"
+        },
+        {
+          "color": {
+            "red": 217,
+            "green": 46,
+            "blue": 58
+          },
+          "score": 0.10895867,
+          "pixelFraction": 0.027447483,
+          "percent": 13.255771435607608,
+          "percentRounded": 13,
+          "rgb": "217, 46, 58",
+          "hex": "D92E3A"
+        },
+        {
+          "color": {
+            "red": 188,
+            "green": 20,
+            "blue": 36
+          },
+          "score": 0.074665144,
+          "pixelFraction": 0.014764169,
+          "percent": 9.083665238119455,
+          "percentRounded": 9,
+          "rgb": "188, 20, 36",
+          "hex": "BC1424"
+        },
+        {
+          "color": {
+            "red": 205,
+            "green": 63,
+            "blue": 64
+          },
+          "score": 0.064999267,
+          "pixelFraction": 0.022393975,
+          "percent": 7.907727093530347,
+          "percentRounded": 8,
+          "rgb": "205, 63, 64",
+          "hex": "CD3F40"
+        },
+        {
+          "color": {
+            "red": 206,
+            "green": 75,
+            "blue": 85
+          },
+          "score": 0.028114125,
+          "pixelFraction": 0.010602457,
+          "percent": 3.420328231907583,
+          "percentRounded": 3,
+          "rgb": "206, 75, 85",
+          "hex": "CE4B55"
+        },
+        {
+          "color": {
+            "red": 242,
+            "green": 113,
+            "blue": 121
+          },
+          "score": 0.024151651,
+          "pixelFraction": 0.0073325406,
+          "percent": 2.938258749382348,
+          "percentRounded": 3,
+          "rgb": "242, 113, 121",
+          "hex": "F27179"
+        }
+      ]
+    }
+  }
+}

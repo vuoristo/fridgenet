@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 import Alamofire
 
-let ROOT_URL = ""
+let ROOT_URL = "https://fridgenet.herokuapp.com"
 
 class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     
@@ -132,7 +132,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 print("Could not get JPEG representation of UIImage")
                 return
             }
-            Alamofire.upload(imageData, to: "https://httpbin.org/post").responseJSON { response in
+            Alamofire.upload(imageData, to: ROOT_URL + "/detect").responseJSON { response in
                 debugPrint(response)
             }
             
