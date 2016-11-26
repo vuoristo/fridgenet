@@ -15,7 +15,8 @@ def jsonParser(label_dict):
             with open('src/tagger/inventory.txt', 'a') as f1:
                 f1.write(label + os.linesep)
                 print("Found label: " + label)
-            return
+            return label
+    return None
 
 def recognize(filename):
     service = discovery.build('vision', 'v1', developerKey=os.environ.get("GOOGLE_API_KEY"))
@@ -33,4 +34,5 @@ def recognize(filename):
             }]
         })
         response = service_request.execute()
-        jsonParser(response['responses'][0]['labelAnnotations'])
+        ret = jsonParser(response['responses'][0]['labelAnnotations'])
+        return ret
