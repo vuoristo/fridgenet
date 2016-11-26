@@ -8,4 +8,5 @@ app = Flask(__name__)
 
 @app.route('/detect', methods=['POST'])
 def parse_image():
-    return jsonify(returnValue="tomato")
+   data = "{'stripeAmountRet': 'ripuliripuli'}"
+   return jsonify(data)
