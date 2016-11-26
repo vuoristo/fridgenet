@@ -15,7 +15,7 @@ def hello_world():
 @application.route('/detect', methods=['POST'])
 def parse_image():
     f = request.files['file']
-    filename = 'tagger/images/uploaded_file' + str(time.time()) + '.jpeg'
+    filename = 'src/tagger/images/uploaded_file' + str(time.time()) + '.jpeg'
     f.save(filename)
     recognize(filename)
     return Response(status=200, response='Recognized')

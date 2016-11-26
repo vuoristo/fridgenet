@@ -7,12 +7,12 @@ from googleapiclient import discovery
 
 #Checks if the labels in the response match any of the accepted
 def jsonParser(label_dict):
-    with open('tagger/foods.txt') as f:
+    with open('src/tagger/foods.txt') as f:
         food_list = f.read().splitlines()
     for annotation in label_dict:
         label = annotation["description"].lower()
         if(label in food_list):
-            with open('tagger/inventory.txt', 'a') as f1:
+            with open('src/tagger/inventory.txt', 'a') as f1:
                 f1.write(label + os.linesep)
                 print("Found label: " + label)
             return
