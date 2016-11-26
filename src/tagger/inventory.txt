@@ -1,2 +1,2 @@
-Strawberry
-Cucumber
+strawberry
+cucumber
