@@ -13,7 +13,7 @@ def read_items(inventory_txt):
     return [item.strip() for item in inventory_txt.split("\n") if item]
 
 def write_items(items):
-    return items.join(u'\n')
+    return u"\n".join(items)
 
 @application.route('/test', methods=['GET'])
 def hello_world():
