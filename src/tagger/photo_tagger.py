@@ -34,6 +34,7 @@ def recognize(filename):
         try:
             ret = jsonParser(response['responses'][0]['labelAnnotations'])
         except Exception:
-            print(response.json)
+            print(response)
+            return None
         return ret
 
