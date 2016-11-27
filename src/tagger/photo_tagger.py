@@ -26,7 +26,7 @@ def recognize(filename):
                 },
                 'features': [{
                     'type': 'LABEL_DETECTION',
-                    'maxResults': 5
+                    'maxResults': 20
                 }]
             }]
         })
