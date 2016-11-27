@@ -42,6 +42,8 @@ def add_item():
         items = read_items(f.read())
         if request.json.get('label'):
             items.append(request.json.get('label'))
+            f.seek(0)
+            f.truncate()
             f.write(write_items(items))
             return Response(status=200)
         else:
@@ -55,7 +57,8 @@ def del_inventory():
         label = request.json.get('label', None)
         if label is not None:
             if label in items:
-                items.remove(items.index(label))
-
+                items.remove(label)
+        f.seek(0)
+        f.truncate()
         f.write(write_items(items))
         return Response(status=200)
