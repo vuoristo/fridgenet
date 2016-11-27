@@ -4,3 +4,7 @@ eggplant
 pepper
 egg
 tomato
+bell pepper
+carrot
+bottle
+caffeine
