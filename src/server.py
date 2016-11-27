@@ -38,7 +38,7 @@ def get_inventory():
 
 @application.route('/inventory', methods=['POST'])
 def add_item():
-    with open('src/tagger/inventory.txt', 'w') as f:
+    with open('src/tagger/inventory.txt', 'r+') as f:
         items = read_items(f.read())
         if request.json.get('label'):
             items.append(request.json.get('label'))
@@ -49,7 +49,7 @@ def add_item():
 
 @application.route('/inventory', methods=['DELETE'])
 def del_inventory():
-    with open('src/tagger/inventory.txt', 'w') as f:
+    with open('src/tagger/inventory.txt', 'r+') as f:
         inventory = f.read()
         items = [item.strip() for item in inventory.split("\n") if item]
         label = request.json.get('label', None)
@@ -59,4 +59,3 @@ def del_inventory():
 
         f.write(write_items(items))
         return Response(status=200)
-
