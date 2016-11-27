@@ -5,8 +5,9 @@ import recipe_recommender
 class FridgeNetClient(object):
     def __init__(self):
         self.recipes = {}
-        self.items = requests.get('https://fridgenet.herokuapp.com/inventory').json()
+        self.items = self.parse_items(requests.get('https://fridgenet.herokuapp.com/inventory').json())
         self.fetch_recipes()
+        self.selected_recipe = None
 
     def item_list(self, title):
         text = urwid.Text(title)
@@ -30,9 +31,9 @@ class FridgeNetClient(object):
             except KeyError:
                 pass
 
-    def parse_items(self):
+    def parse_items(self, items):
         data = {}
-        for item in self.items:
+        for item in items:
             count = data.get(item, 0)
             data[item] = count + 1
         result = []
@@ -40,10 +41,11 @@ class FridgeNetClient(object):
             result.append({'name': item_name, 'count': count})
         return result
 
-    def on_recipe_selected(self, recipe_data):
-        pass
+    def on_recipe_selected(self, button, recipe_data):
+        self.selected_recipe = recipe_data['recipe']
+        self.rerender()
 
-    def right_panel(self, items):
+    def recipe_list(self):
         header = urwid.AttrWrap(urwid.Text(u"Recipes"), 'streak')
         body = [header, urwid.Divider()]
 
@@ -53,16 +55,33 @@ class FridgeNetClient(object):
             body.append(button)
         return urwid.ListBox(urwid.SimpleFocusListWalker(body))
 
-    def run(self):
-        items = self.parse_items()
+    def recipe_single_view(self):
+        header = urwid.AttrMap(urwid.Text(self.selected_recipe['title']), 'streak')
+        import ipdb; ipdb.set_trace()
+        body = [
+                header,
+                urwid.Divider(),
+                urwid.Text(self.selected_recipe['method'])
+                ]
+
+    def render(self):
         header = urwid.AttrWrap(urwid.Text(u"Fridgenet"), 'banner')
 
         left_panel =  self.item_list(u'Fridge Contents')
-        right_panel = self.right_panel(items)
+        if self.selected_recipe is None:
+            right_panel = self.recipe_list()
+        else:
+            right_panel = self.recipe_single_view()
 
         main = urwid.Columns([left_panel, right_panel])
-        view = urwid.Frame(urwid.AttrWrap(main, 'body'), header=header)
+        frame = urwid.Frame(urwid.AttrWrap(main, 'body'), header=header)
+        view = urwid.Overlay(frame, urwid.SolidFill(u'\N{MEDIUM SHADE}'),
+            align='center', width=('relative', 60),
+            valign='middle', height=('relative', 60),
+            min_width=20, min_height=9)
+        return view
 
+    def run(self):
         palette = [
             ('banner', '', '', '', 'g50', '#60a'),
             ('streak', '', '', '', '#ffa', '#60d'),
@@ -70,14 +89,12 @@ class FridgeNetClient(object):
             ('outside', '', '', '', 'g27', '#a06'),
             ('bg', '', '', '', 'g7', '#d06')]
 
-        top = urwid.Overlay(view, urwid.SolidFill(u'\N{MEDIUM SHADE}'),
-            align='center', width=('relative', 60),
-            valign='middle', height=('relative', 60),
-            min_width=20, min_height=9)
+        self.loop = urwid.MainLoop(self.render(), palette=palette)
+        self.loop.screen.set_terminal_properties(colors=256)
+        self.loop.run()
 
-        loop = urwid.MainLoop(top, palette=palette)
-        loop.screen.set_terminal_properties(colors=256)
-        loop.run()
+    def rerender(self):
+        self.loop.widget = self.render()
 
 
 if __name__ == "__main__":
