@@ -23,7 +23,10 @@ class FridgeNetClient(object):
         raise urwid.ExitMainLoop()
 
     def fetch_recipes(self):
-        recipe_ids = recipe_recommender.get_recipes_for_items(['tomato'])
+        if len(self.items) > 0:
+            recipe_ids = recipe_recommender.get_recipes_for_items(self.items[-1])
+        else:
+            recipe_ids = recipe_recommender.get_recipes_for_items('tomato')
         fetched_recipes = [recipe_recommender.get_recipe(id) for id in recipe_ids[0:10]]
         for recipe in fetched_recipes:
             try:
