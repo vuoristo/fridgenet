@@ -55,17 +55,24 @@ class FridgeNetClient(object):
         for title, recipe in self.recipes.items():
             button = urwid.Button(title)
             urwid.connect_signal(button, 'click', self.on_recipe_selected, recipe)
-            body.append(button)
+            body.append(urwid.AttrMap(button, None, focus_map='reversed'))
         return urwid.ListBox(urwid.SimpleFocusListWalker(body))
+
+    def close_recipe(self, button):
+        self.selected_recipe = None
+        self.rerender()
 
     def recipe_single_view(self):
         header = urwid.AttrMap(urwid.Text(self.selected_recipe['title']), 'streak')
-        import ipdb; ipdb.set_trace()
+        button = urwid.Button("Back")
+        urwid.connect_signal(button, "click", self.close_recipe)
         body = [
                 header,
                 urwid.Divider(),
-                urwid.Text(self.selected_recipe['method'])
+                urwid.Text("\n".join(self.selected_recipe['ingredients'])),
+                button
                 ]
+        return urwid.ListBox(urwid.SimpleFocusListWalker(body))
 
     def render(self):
         header = urwid.AttrWrap(urwid.Text(u"Fridgenet"), 'banner')
@@ -77,6 +84,7 @@ class FridgeNetClient(object):
             right_panel = self.recipe_single_view()
 
         main = urwid.Columns([left_panel, right_panel])
+        main.focus_position = 1
         frame = urwid.Frame(urwid.AttrWrap(main, 'body'), header=header)
         view = urwid.Overlay(frame, urwid.SolidFill(u'\N{MEDIUM SHADE}'),
             align='center', width=('relative', 60),
