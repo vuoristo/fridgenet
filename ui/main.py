@@ -80,9 +80,9 @@ class FridgeNetClient(object):
 
     def refresh(self):
         self.fetch_items()
-        self.rerender()
-        self.scheduler = Timer(10, self.refresh)
+        self.scheduler = Timer(2, self.refresh)
         self.scheduler.start()
+        self.rerender()
 
     def render(self):
         header = urwid.AttrWrap(urwid.Text(u"Fridgenet"), 'banner')
@@ -103,7 +103,7 @@ class FridgeNetClient(object):
         return view
 
     def run(self):
-        self.scheduler = Timer(10, self.refresh)
+        self.scheduler = Timer(2, self.refresh)
         self.scheduler.start()
         palette = [
             ('banner', '', '', '', 'g50', '#60a'),
@@ -118,7 +118,7 @@ class FridgeNetClient(object):
 
     def rerender(self):
         self.loop.widget = self.render()
-
+        self.loop.draw_screen()
 
 if __name__ == "__main__":
     FridgeNetClient().run()
