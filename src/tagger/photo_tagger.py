@@ -11,10 +11,7 @@ def jsonParser(label_dict):
         food_list = f.read().splitlines()
     for annotation in label_dict:
         label = annotation["description"].lower()
-        if(label in food_list):
-            with open('src/tagger/inventory.txt', 'a') as f1:
-                f1.write(label + os.linesep)
-                print("Found label: " + label)
+        if label in food_list:
             return label
     return None
 
@@ -36,3 +33,4 @@ def recognize(filename):
         response = service_request.execute()
         ret = jsonParser(response['responses'][0]['labelAnnotations'])
         return ret
+

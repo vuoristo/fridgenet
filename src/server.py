@@ -9,6 +9,12 @@ import time
 
 application = Flask(__name__)
 
+def read_items(inventory_txt):
+    return [item.strip() for item in inventory_txt.split("\n") if item]
+
+def write_items(items):
+    return items.join(u'\n')
+
 @application.route('/test', methods=['GET'])
 def hello_world():
     return Response(status=200, response='Hello, world!')
@@ -27,9 +33,19 @@ def parse_image():
 @application.route('/inventory', methods=['GET'])
 def get_inventory():
     with open('src/tagger/inventory.txt', 'r') as f:
-        inventory = f.read()
-        items = [item.strip() for item in inventory.split("\n") if item]
+        items = read_items(f.read())
         return Response(status=200, response=json.dumps(items), content_type='application/javascript')
+
+@application.route('/inventory', methods=['POST'])
+def add_item():
+    with open('src/tagger/inventory.txt', 'w') as f:
+        items = read_items(f.read())
+        if request.json.get('label'):
+            items.append(request.json.get('label'))
+            f.write(write_items(items))
+            return Response(status=200)
+        else:
+            return Response(status=400, text="item required")
 
 @application.route('/inventory', methods=['DELETE'])
 def del_inventory():
@@ -41,6 +57,6 @@ def del_inventory():
             if label in items:
                 items.remove(items.index(label))
 
-        for item in items:
-            f.write(item + os.linesep)
+        f.write(write_items(items))
         return Response(status=200)
+
