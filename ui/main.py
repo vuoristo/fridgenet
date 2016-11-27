@@ -1,13 +1,17 @@
 import urwid
 import requests
 import recipe_recommender
+from threading import Timer
 
 class FridgeNetClient(object):
     def __init__(self):
         self.recipes = {}
-        self.items = self.parse_items(requests.get('https://fridgenet.herokuapp.com/inventory').json())
+        self.fetch_items()
         self.fetch_recipes()
         self.selected_recipe = None
+
+    def fetch_items(self):
+        self.items = self.parse_items(requests.get('https://fridgenet.herokuapp.com/inventory').json())
 
     def item_list(self, title):
         text = urwid.Text(title)
@@ -74,6 +78,12 @@ class FridgeNetClient(object):
                 ]
         return urwid.ListBox(urwid.SimpleFocusListWalker(body))
 
+    def refresh(self):
+        self.fetch_items()
+        self.rerender()
+        self.scheduler = Timer(10, self.refresh)
+        self.scheduler.start()
+
     def render(self):
         header = urwid.AttrWrap(urwid.Text(u"Fridgenet"), 'banner')
 
@@ -93,6 +103,8 @@ class FridgeNetClient(object):
         return view
 
     def run(self):
+        self.scheduler = Timer(10, self.refresh)
+        self.scheduler.start()
         palette = [
             ('banner', '', '', '', 'g50', '#60a'),
             ('streak', '', '', '', '#ffa', '#60d'),
