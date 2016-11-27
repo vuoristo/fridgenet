@@ -31,6 +31,9 @@ def recognize(filename):
             }]
         })
         response = service_request.execute()
-        ret = jsonParser(response['responses'][0]['labelAnnotations'])
+        try:
+            ret = jsonParser(response['responses'][0]['labelAnnotations'])
+        except Exception:
+            print(response.json)
         return ret
 
